@@ -5,11 +5,13 @@ const RepoList =(props)=>{
 
     const [name, setName] = useState('');
     const [data, setData] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [notFound, setNotFound] = useState('');
 
     const fetchData = async () => {
         try {
              setLoading(true);
+						 setNotFound('')
              const response = await axios.get(
                  `https://api.github.com/users/${name}/repos`
              );
@@ -17,6 +19,8 @@ const RepoList =(props)=>{
              setData(response.data)
          } catch (error) {
              console.log('e',error)
+						 setNotFound('No repository for this username')
+             setData([])
          } finally {
              setLoading(false);
          }
@@ -24,13 +28,19 @@ const RepoList =(props)=>{
 
     const handleSubmit = () =>{
             fetchData();
-            console.log('data',data)
     }
 
     const handleChangeName = (event) =>{
         console.log(event.target.value)
         setName(event.target.value)
     }
+
+		let loadingTxt;
+		if(loading){
+				loadingTxt='Loading'
+		} else{
+				loadingTxt=''
+		}
 
     return(
         <div style={styles.container} >
@@ -41,19 +51,30 @@ const RepoList =(props)=>{
 							placeholder = {'Input username'}
 							onChange={(event) => handleChangeName(event)}
 							/>
+							<button onClick={()=>handleSubmit()}>Submit</button>
+
 							</div>
 							<div>Username : {name} </div>
-							<button onClick={()=>handleSubmit()}>Submit</button>
-							<div style={{fontWeight:'bold',fontSize:20}}> Repository List </div>
+							<div style={styles.bold}> Repository List </div>
+              <div style={styles.bold}>==============</div>
 					</div>
 
-					{ data == [] ? 'null' :
-						data.map((data, index)=> (
-							<div key={index}>
-								{index+1}.{data.name}
-							</div>
-            ))
-           }
+					{
+                (!data ? 
+                   notFound    
+                     :
+                     <>
+                     {loadingTxt}
+                     {notFound}
+                        {    data.map((data, index)=> (
+                            <div key={index}>
+                            {index+1}.    {data.name} {`--> `} 
+                            <a href={data.html_url} >{data.html_url} </a>
+                            </div>
+                        ))}
+                    </>
+                )
+          } 
         </div>
     )
 }
@@ -72,6 +93,10 @@ const styles={
     margin:10,
         padding:'0px 10px 0px 10px',
   },
+	bold:{
+		fontWeight:'bold',
+		fontSize:20
+}
 }
 
 export default RepoList
