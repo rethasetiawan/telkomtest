@@ -43,11 +43,12 @@ const RepoList =(props)=>{
 		}
 
     return(
-        <div style={styles.container} >
+        // for example i input 'mil' for username
+        <div style={styles.container} >  
 					<div style={{alignItems:'center', flexDirection:'column', display:'flex'}}>
 							<div>
 							<input
-								style={styles.textBox}
+							style={styles.textBox}
 							placeholder = {'Input username'}
 							onChange={(event) => handleChangeName(event)}
 							/>
@@ -56,7 +57,7 @@ const RepoList =(props)=>{
 							</div>
 							<div>Username : {name} </div>
 							<div style={styles.bold}> Repository List </div>
-              <div style={styles.bold}>==============</div>
+                            <div style={styles.bold}>==============</div>
 					</div>
 
 					{
